@@ -21,6 +21,15 @@
     header .desc{color:var(--muted);font-size:13px}
     .controls{display:flex;gap:8px}
     button{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.04);color:var(--fg);padding:8px 10px;border-radius:8px;cursor:pointer}
+  /* anchor styled like a button for the LinkedIn / Medium links on the right */
+  .link-button{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.04);color:var(--fg);padding:8px 10px;border-radius:8px;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center}
+  .link-button:hover{background:rgba(255,255,255,0.06)}
+  .link-button svg{width:18px;height:18px;display:inline-block}
+  .link-button{padding:6px 8px}
+  .visually-hidden{position:absolute !important;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
+    /* title row: keep title and small inline links on the same line */
+    header .title-row{display:flex;align-items:center;gap:10px}
+    header .title-links{display:flex;gap:6px;align-items:center}
 
   /* canvas */
   /* increased size so long node titles are fully visible; allow page scrolling instead of inner canvas scrolling */
@@ -59,13 +68,31 @@
   <div class="wrap">
     <header>
       <div>
-  <div class="title">TestNG: <span class="no-bold">The Next Generation Testing Framework</span> Pt.1</div>
-  <div class="desc">Click or press Enter on nodes to expand/collapse. State saved in browser.</div>
+        <div class="title-row">
+          <div class="title">TestNG: <span class="no-bold">The Next Generation Testing Framework</span> Pt.1</div>
+          <div class="title-links">
+            <a id="linkedin" class="link-button" href="https://linkedin.com/in/rangikaa-herath/" target="_blank" rel="noopener noreferrer" title="LinkedIn" aria-label="LinkedIn profile">
+              <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg">
+                <rect x="0" y="0" width="24" height="24" rx="4" fill="#0A66C2"></rect>
+                <text x="12" y="16" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="11" fill="#ffffff">in</text>
+              </svg>
+              <span class="visually-hidden">LinkedIn</span>
+            </a>
+            <a id="medium" class="link-button" href="https://medium.com/@hmrsherath001/testng-the-next-generation-testing-framework-b00d9d85b3fe" target="_blank" rel="noopener noreferrer" title="Medium article" aria-label="Medium article">
+              <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg">
+                <rect x="0" y="0" width="24" height="24" rx="4" fill="#000000"></rect>
+                <text x="12" y="16" text-anchor="middle" font-family="Georgia, Times, serif" font-size="12" font-weight="700" fill="#ffffff">M</text>
+              </svg>
+              <span class="visually-hidden">Medium</span>
+            </a>
+          </div>
+        </div>
+        <div class="desc">Click or press Enter on nodes to expand/collapse. State saved in browser.</div>
       </div>
       <div class="controls">
         <button id="expandAll">Expand all</button>
         <button id="collapseAll">Collapse all</button>
-  <button id="toggleMnemonics">Toggle Mnemonics</button>
+        <button id="toggleMnemonics">Toggle Mnemonics</button>
       </div>
     </header>
 
