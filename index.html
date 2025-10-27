@@ -57,7 +57,7 @@
   /* custom color for the 'Comparison with JUnit' node (id: what-5) */
   .node[data-id="what-5"]{background:linear-gradient(90deg,#c7f0d2,#439365);color:#012614}
 
-  .mnemonic{display:inline-block;margin-left:8px;background:rgba(0,0,0,0.12);padding:2px 6px;border-radius:999px;font-size:12px;color:#000;font-weight:400}
+  /* mnemonics removed */
 
     /* legend */
     .legend{color:var(--muted);font-size:12px}
@@ -92,7 +92,6 @@
       <div class="controls">
         <button id="expandAll">Expand all</button>
         <button id="collapseAll">Collapse all</button>
-        <button id="toggleMnemonics">Toggle Mnemonics</button>
       </div>
     </header>
 
@@ -103,59 +102,58 @@
   </div>
 
   <script>
-    // Data structure for the mind map (matches earlier content)
+    // Data structure for the mind map (mnemonics removed)
     const data = {
-      id: 'root', title: 'TestNG Testing Framework Pt.1', mnemonic: 'Test + NG = Next Generation', children:[
-        {id:'what', title:'What is TestNG?', mnemonic:'NG = Next Gen', children:[
-          {id:'what-1', title:'Testing Framework (Proper Name)', mnemonic: 'Framework name'},
-          {id:'what-2', title:'NG stands for Next Generation', mnemonic: 'NG = Next Gen'},
-          {id:'what-3', title:'Unit Testing Framework (Starting Point)', mnemonic: 'Think unit tests first'},
-          {id:'what-4', title:'Supports only Java', mnemonic: 'Java-focused'},
-          {id:'what-5', title:'Comparison with JUnit', mnemonic: 'Why choose TestNG?', children:[
-            {id:'cmp-1', title:'More powerful and flexible than JUnit', mnemonic: 'Power + Flex'},
-            {id:'cmp-2', title:'Overcame JUnit limitations', mnemonic: 'Fixes JUnit pain points'},
-            {id:'cmp-3', title:'More annotations available', mnemonic: 'Richer annotations'},
-            {id:'cmp-4', title:'Easier to use', mnemonic: 'Less boilerplate'}
+      id: 'root', title: 'TestNG Testing Framework Pt.1', children:[
+        {id:'what', title:'What is TestNG?', children:[
+          {id:'what-1', title:'Testing Framework (Proper Name)'},
+          {id:'what-2', title:'NG stands for Next Generation'},
+          {id:'what-3', title:'Unit Testing Framework (Starting Point)'},
+          {id:'what-4', title:'Supports only Java'},
+          {id:'what-5', title:'Comparison with JUnit', children:[
+            {id:'cmp-1', title:'More powerful and flexible than JUnit'},
+            {id:'cmp-2', title:'Overcame JUnit limitations'},
+            {id:'cmp-3', title:'More annotations available'},
+            {id:'cmp-4', title:'Easier to use'}
           ]}
         ]},
-        {id:'features', title:'Key Capabilities & Features', mnemonic:'parallelism, annotations, flexible', children:[
-          {id:'feat-1', title:'Free and Open Source', mnemonic:'FOSS'},
-          {id:'feat-2', title:'Generates HTML Report (Test Results)', mnemonic:'Readable reports'},
-          {id:'feat-3', title:'Easy Annotations', mnemonic:'Annotation-driven'},
-          {id:'feat-4', title:'Grouping of Tests (e.g., Smoke Testing)', mnemonic:'Group tests'},
-          {id:'feat-5', title:'Sequencing/Order of Execution (Priority Attribute)', mnemonic:'Priority controls order'},
-          {id:'feat-6', title:'Parameterizing Tests (Data Driven Testing)', mnemonic:'Data-driven'},
-          {id:'feat-7', title:'Parallel Execution', mnemonic:'Run tests concurrently'}
+        {id:'features', title:'Key Capabilities & Features', children:[
+          {id:'feat-1', title:'Free and Open Source'},
+          {id:'feat-2', title:'Generates HTML Report (Test Results)'},
+          {id:'feat-3', title:'Easy Annotations'},
+          {id:'feat-4', title:'Grouping of Tests (e.g., Smoke Testing)'},
+          {id:'feat-5', title:'Sequencing/Order of Execution (Priority Attribute)'},
+          {id:'feat-6', title:'Parameterizing Tests (Data Driven Testing)'},
+          {id:'feat-7', title:'Parallel Execution'}
         ]},
-        {id:'applications', title:'Applications of TestNG', mnemonic:'Automation contexts', children:[
-          {id:'app-developers', title:'Developers: Automating Unit/Integration Tests', mnemonic:'Developer CI tests'},
-          {id:'app-testers', title:'Software Testers: Automating UI, API, Mobile Tests', mnemonic:'Tester automation', children:[
-            {id:'app-ui', title:'UI Automation (with Selenium)', mnemonic:'Selenium UI'},
-            {id:'app-api', title:'API Automation (with Rest Assured)', mnemonic:'Rest-Assured API'},
-            {id:'app-mobile', title:'Mobile Automation (with Appium)', mnemonic:'Appium Mobile'}
+        {id:'applications', title:'Applications of TestNG', children:[
+          {id:'app-developers', title:'Developers: Automating Unit/Integration Tests'},
+          {id:'app-testers', title:'Software Testers: Automating UI, API, Mobile Tests', children:[
+            {id:'app-ui', title:'UI Automation (with Selenium)'},
+            {id:'app-api', title:'API Automation (with Rest Assured)'},
+            {id:'app-mobile', title:'Mobile Automation (with Appium)'}
           ]}
         ]},
-        {id:'core', title:'Core Concepts & Attributes', mnemonic:'Execution, XML, Annotations', children:[
-          {id:'core-1', title:'Order of Execution Control', mnemonic:'Execution order', children:[
-            {id:'order-1', title:'Default Order: Alphabetical/ASCII Order', mnemonic:'ASCII sort'},
-            {id:'order-2', title:'Priority Attribute', mnemonic:'@Test(priority=) example', children:[
-              {id:'prio-1', title:'Changes default execution order', mnemonic:'Use priority'},
-              {id:'prio-2', title:'Default Priority: 0 (if not specified)', mnemonic:'Default 0'},
-              {id:'prio-3', title:'Supports Negative Priorities', mnemonic:'Negative allowed'},
-              {id:'prio-4', title:'Allows same priority (falls back to ASCII)', mnemonic:'Tie -> ASCII'}
+        {id:'core', title:'Core Concepts & Attributes', children:[
+          {id:'core-1', title:'Order of Execution Control', children:[
+            {id:'order-1', title:'Default Order: Alphabetical/ASCII Order'},
+            {id:'order-2', title:'Priority Attribute', children:[
+              {id:'prio-1', title:'Changes default execution order'},
+              {id:'prio-2', title:'Default Priority: 0 (if not specified)'},
+              {id:'prio-3', title:'Supports Negative Priorities'},
+              {id:'prio-4', title:'Allows same priority (falls back to ASCII)'}
             ]}
           ]},
-          {id:'core-2', title:'TestNG XML File (Batch Execution)', mnemonic:'Suite configuration', children:[
-            {id:'xml-1', title:'Configuration file for tests', mnemonic:'XML controls suites'},
-            {id:'xml-2', title:'Enables Batch Execution (multiple classes)', mnemonic:'Run suites'},
-            {id:'xml-3', title:'Customizing Tests (Include/Exclude methods)', mnemonic:'Include/Exclude tags'},
-            {id:'xml-4', title:'Run as TestNG Suite', mnemonic:'Run suite command'},
-            {id:'xml-5', title:'Can be named anything (e.g., smoke.xml)', mnemonic:'Name freely'},
-            {id:'xml-6', title:'Allows Multiple XML Files', mnemonic:'Multiple suites'}
+          {id:'core-2', title:'TestNG XML File (Batch Execution)', children:[
+            {id:'xml-1', title:'Configuration file for tests'},
+            {id:'xml-2', title:'Enables Batch Execution (multiple classes)'},
+            {id:'xml-3', title:'Customizing Tests (Include/Exclude methods)'},
+            {id:'xml-4', title:'Run as TestNG Suite'},
+            {id:'xml-5', title:'Can be named anything (e.g., smoke.xml)'},
+            {id:'xml-6', title:'Allows Multiple XML Files'}
           ]},
-          {id:'core-3', title:'Annotations (@Test)', mnemonic:'@Test & friends'}
+          {id:'core-3', title:'Annotations (@Test)'}
         ]},
-        
       ]
     };
 
@@ -164,7 +162,6 @@
     const canvas = document.getElementById('canvas');
   const svg = document.getElementById('svg');
   let state = loadState();
-    let showMnemonics = (localStorage.getItem('mindmap:testng:mn') !== '0');
 
     function loadState(){
       try{const s = JSON.parse(localStorage.getItem(STORAGE)); return s || {}}catch(e){return {}}}
@@ -238,7 +235,7 @@
         el.dataset.id = n.node.id;
         el.tabIndex = 0;
         el.setAttribute('role','button');
-        el.innerHTML = `<div class="title">${escapeHtml(n.node.title)}${n.node.mnemonic && showMnemonics? '<span class="mnemonic">' + escapeHtml(n.node.mnemonic) + '</span>': ''}</div>` + (n.node.sub? `<div class="sub">${escapeHtml(n.node.sub)}</div>`:'');
+  el.innerHTML = `<div class="title">${escapeHtml(n.node.title)}</div>` + (n.node.sub? `<div class="sub">${escapeHtml(n.node.sub)}</div>`:'');
 
         if(n.node.children && n.node.children.length){
           const badge = document.createElement('div'); badge.style.position='absolute'; badge.style.right='-8px'; badge.style.top='-8px'; badge.style.width='28px'; badge.style.height='28px'; badge.style.borderRadius='8px'; badge.style.display='grid'; badge.style.placeItems='center'; badge.style.background='rgba(0,0,0,0.14)';
@@ -352,7 +349,7 @@
     // controls
     document.getElementById('expandAll').addEventListener('click', ()=>{ traverse(data,(n)=>state[n.id]='expanded'); saveState(); layout(); });
     document.getElementById('collapseAll').addEventListener('click', ()=>{ traverse(data,(n)=>state[n.id]='collapsed'); saveState(); layout(); });
-    document.getElementById('toggleMnemonics').addEventListener('click', ()=>{ showMnemonics = !showMnemonics; localStorage.setItem('mindmap:testng:mn', showMnemonics? '1' : '0'); layout(); });
+  // Toggle mnemonics control removed
 
   // initial: ensure root and first-level branches expanded unless stored
   if(!('root' in state)) state.root = 'expanded';
