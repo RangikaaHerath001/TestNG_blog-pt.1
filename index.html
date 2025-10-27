@@ -1,0 +1,349 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>TestNG: The Next Generation Testing Framework — Radial (NotebookLM style)</title>
+  <style>
+    :root{
+      --bg:#071322; --fg:#ecf4ff; --muted:#9fb1c8;
+      --c0:#ffb4aa; --c1:#ffd6a5; --c2:#baffc9; --c3:#9fb6ff; --c4:#e7d3ff;
+    }
+    html,body{height:100%;margin:0;font-family:Inter,system-ui,Segoe UI,Roboto,Arial;color:var(--fg);background:linear-gradient(180deg,#071322 0%, #081027 70%)}
+   /* allow the canvas to start at the left and let the page scroll horizontally
+     when the canvas is wider than the viewport so long nodes (root etc.)
+     won't be clipped */
+  .wrap{display:flex;flex-direction:column;gap:12px;padding:18px;align-items:flex-start;overflow:visible; /* let the page handle scrolling (no inner scrollbars) */}
+  header{width:100%;max-width:1600px;display:flex;align-items:center;justify-content:space-between}
+  header .title{font-size:18px;font-weight:600}
+  /* allow a part of the title to be rendered without bold weight */
+  header .title .no-bold{font-weight:400}
+    header .desc{color:var(--muted);font-size:13px}
+    .controls{display:flex;gap:8px}
+    button{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.04);color:var(--fg);padding:8px 10px;border-radius:8px;cursor:pointer}
+
+  /* canvas */
+  /* increased size so long node titles are fully visible; allow page scrolling instead of inner canvas scrolling */
+  /* increased width from 1400 to 1800 to give more horizontal room */
+  .canvas{width:1800px;height:1000px;background:linear-gradient(180deg, rgba(255,255,255,0.02), transparent);border-radius:12px;border:1px solid rgba(255,255,255,0.03);position:relative;overflow:visible;padding:12px;box-sizing:border-box}
+    svg.connector{position:absolute;left:0;top:0;width:100%;height:100%;pointer-events:none}
+
+  /* Prefer page-level scrolling and hide any internal scrollbars if the browser still shows them. */
+  .wrap, .canvas { scrollbar-width: none; -ms-overflow-style: none; }
+  .wrap::-webkit-scrollbar, .canvas::-webkit-scrollbar { display: none; }
+
+  /* left-align nodes so long text isn't clipped at the right edge; translate only vertically */
+  .node{position:absolute;transform:translateY(-50%);min-width:140px;max-width:360px;padding:10px 14px;border-radius:10px;box-shadow:0 6px 22px rgba(2,6,23,0.6);cursor:pointer;user-select:none;word-wrap:break-word}
+    .node:focus{outline:3px solid rgba(159,182,255,0.16)}
+    .node .title{font-weight:700;font-size:13px}
+    .node .sub{font-size:12px;color:var(--muted);margin-top:4px}
+
+    /* depth colors */
+    .d0{background:linear-gradient(90deg,var(--c0),#ff8b80);color:#210806}
+    .d1{background:linear-gradient(90deg,var(--c1),#ffe6a8);color:#2b1b00}
+    .d2{background:linear-gradient(90deg,var(--c2),#7de9a8);color:#012614}
+    .d3{background:linear-gradient(90deg,var(--c3),#7ea7ff);color:#07123e}
+    .d4{background:linear-gradient(90deg,var(--c4),#d9c9ff);color:#2a103a}
+
+  /* custom color for the 'Comparison with JUnit' node (id: what-5) */
+  .node[data-id="what-5"]{background:linear-gradient(90deg,#c7f0d2,#439365);color:#012614}
+
+  .mnemonic{display:inline-block;margin-left:8px;background:rgba(0,0,0,0.12);padding:2px 6px;border-radius:999px;font-size:12px;color:#000;font-weight:400}
+
+    /* legend */
+    .legend{color:var(--muted);font-size:12px}
+  @media (max-width:1400px){.canvas{width:96%;height:900px}}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <div>
+  <div class="title">TestNG: <span class="no-bold">The Next Generation Testing Framework</span> Pt.1</div>
+  <div class="desc">Click or press Enter on nodes to expand/collapse. State saved in browser.</div>
+      </div>
+      <div class="controls">
+        <button id="expandAll">Expand all</button>
+        <button id="collapseAll">Collapse all</button>
+  <button id="toggleMnemonics">Toggle Mnemonics</button>
+      </div>
+    </header>
+
+    <div class="canvas" id="canvas">
+      <svg class="connector" id="svg"></svg>
+      <!-- nodes injected here -->
+    </div>
+  </div>
+
+  <script>
+    // Data structure for the mind map (matches earlier content)
+    const data = {
+      id: 'root', title: 'TestNG Testing Framework Pt.1', mnemonic: 'Test + NG = Next Generation', children:[
+        {id:'what', title:'What is TestNG?', mnemonic:'NG = Next Gen', children:[
+          {id:'what-1', title:'Testing Framework (Proper Name)', mnemonic: 'Framework name'},
+          {id:'what-2', title:'NG stands for Next Generation', mnemonic: 'NG = Next Gen'},
+          {id:'what-3', title:'Unit Testing Framework (Starting Point)', mnemonic: 'Think unit tests first'},
+          {id:'what-4', title:'Supports only Java', mnemonic: 'Java-focused'},
+          {id:'what-5', title:'Comparison with JUnit', mnemonic: 'Why choose TestNG?', children:[
+            {id:'cmp-1', title:'More powerful and flexible than JUnit', mnemonic: 'Power + Flex'},
+            {id:'cmp-2', title:'Overcame JUnit limitations', mnemonic: 'Fixes JUnit pain points'},
+            {id:'cmp-3', title:'More annotations available', mnemonic: 'Richer annotations'},
+            {id:'cmp-4', title:'Easier to use', mnemonic: 'Less boilerplate'}
+          ]}
+        ]},
+        {id:'features', title:'Key Capabilities & Features', mnemonic:'parallelism, annotations, flexible', children:[
+          {id:'feat-1', title:'Free and Open Source', mnemonic:'FOSS'},
+          {id:'feat-2', title:'Generates HTML Report (Test Results)', mnemonic:'Readable reports'},
+          {id:'feat-3', title:'Easy Annotations', mnemonic:'Annotation-driven'},
+          {id:'feat-4', title:'Grouping of Tests (e.g., Smoke Testing)', mnemonic:'Group tests'},
+          {id:'feat-5', title:'Sequencing/Order of Execution (Priority Attribute)', mnemonic:'Priority controls order'},
+          {id:'feat-6', title:'Parameterizing Tests (Data Driven Testing)', mnemonic:'Data-driven'},
+          {id:'feat-7', title:'Parallel Execution', mnemonic:'Run tests concurrently'}
+        ]},
+        {id:'applications', title:'Applications of TestNG', mnemonic:'Automation contexts', children:[
+          {id:'app-developers', title:'Developers: Automating Unit/Integration Tests', mnemonic:'Developer CI tests'},
+          {id:'app-testers', title:'Software Testers: Automating UI, API, Mobile Tests', mnemonic:'Tester automation', children:[
+            {id:'app-ui', title:'UI Automation (with Selenium)', mnemonic:'Selenium UI'},
+            {id:'app-api', title:'API Automation (with Rest Assured)', mnemonic:'Rest-Assured API'},
+            {id:'app-mobile', title:'Mobile Automation (with Appium)', mnemonic:'Appium Mobile'}
+          ]}
+        ]},
+        {id:'core', title:'Core Concepts & Attributes', mnemonic:'Execution, XML, Annotations', children:[
+          {id:'core-1', title:'Order of Execution Control', mnemonic:'Execution order', children:[
+            {id:'order-1', title:'Default Order: Alphabetical/ASCII Order', mnemonic:'ASCII sort'},
+            {id:'order-2', title:'Priority Attribute', mnemonic:'@Test(priority=) example', children:[
+              {id:'prio-1', title:'Changes default execution order', mnemonic:'Use priority'},
+              {id:'prio-2', title:'Default Priority: 0 (if not specified)', mnemonic:'Default 0'},
+              {id:'prio-3', title:'Supports Negative Priorities', mnemonic:'Negative allowed'},
+              {id:'prio-4', title:'Allows same priority (falls back to ASCII)', mnemonic:'Tie -> ASCII'}
+            ]}
+          ]},
+          {id:'core-2', title:'TestNG XML File (Batch Execution)', mnemonic:'Suite configuration', children:[
+            {id:'xml-1', title:'Configuration file for tests', mnemonic:'XML controls suites'},
+            {id:'xml-2', title:'Enables Batch Execution (multiple classes)', mnemonic:'Run suites'},
+            {id:'xml-3', title:'Customizing Tests (Include/Exclude methods)', mnemonic:'Include/Exclude tags'},
+            {id:'xml-4', title:'Run as TestNG Suite', mnemonic:'Run suite command'},
+            {id:'xml-5', title:'Can be named anything (e.g., smoke.xml)', mnemonic:'Name freely'},
+            {id:'xml-6', title:'Allows Multiple XML Files', mnemonic:'Multiple suites'}
+          ]},
+          {id:'core-3', title:'Annotations (@Test)', mnemonic:'@Test & friends'}
+        ]},
+        
+      ]
+    };
+
+    // State: which nodes are collapsed/expanded
+    const STORAGE = 'mindmap:testng:radial';
+    const canvas = document.getElementById('canvas');
+  const svg = document.getElementById('svg');
+  let state = loadState();
+    let showMnemonics = (localStorage.getItem('mindmap:testng:mn') !== '0');
+
+    function loadState(){
+      try{const s = JSON.parse(localStorage.getItem(STORAGE)); return s || {}}catch(e){return {}}}
+    function saveState(){ localStorage.setItem(STORAGE, JSON.stringify(state)); }
+
+    // Flatten nodes for easy lookup
+    function traverse(node, fn, depth=0, parent=null){ fn(node, depth, parent); if(node.children) node.children.forEach(c=>traverse(c,fn,depth+1,node)); }
+
+    // Toggle expanded/collapsed
+    function isCollapsed(id){ return state[id] === 'collapsed'; }
+    function setCollapsed(id, val){ state[id] = val? 'collapsed' : 'expanded'; saveState(); }
+
+    // Layout algorithm: left-to-right hierarchical tree (root left, children to the right)
+    function layout(){
+    const w = canvas.clientWidth; const h = canvas.clientHeight;
+    // increased spacing to avoid overlap and ensure node text fits
+  const margin = 48; const xSpacing = 320; const ySpacing = 96; // increased vertical spacing to avoid overlapping boxes
+    // NOTE: we don't set the svg viewport here because the final content
+    // size depends on the laid-out nodes. We'll compute required svg
+    // width/height after layout and then resize the svg so connectors
+    // are not clipped. Clearing of svg children happens later.
+
+      const nodes = [];
+      let currentY = margin;
+
+      // place returns {minY, maxY}
+      function place(node, depth, parent){
+        const kids = (node.children || []).filter(k=>k);
+        // if node is collapsed, treat it as a leaf
+        if(!kids.length || isCollapsed(node.id)){
+          const x = margin + depth * xSpacing;
+          const y = currentY;
+          nodes.push({node, depth, x, y, parent});
+          currentY += ySpacing;
+          return {minY: y, maxY: y};
+        }
+
+        // place children and compute their span
+        const childRanges = [];
+        for(const c of kids){
+          const r = place(c, depth+1, node);
+          childRanges.push(r);
+        }
+        const minY = childRanges[0].minY;
+        const maxY = childRanges[childRanges.length-1].maxY;
+        const x = margin + depth * xSpacing;
+        const y = (minY + maxY)/2;
+        nodes.push({node, depth, x, y, parent});
+        return {minY, maxY};
+      }
+
+      // start placing from root
+      currentY = margin;
+      place(data, 0, null);
+
+      // compute clamped render-x for each node so boxes don't overflow the canvas
+      const nodeMaxW = 360; const maxLeft = Math.max(margin, w - margin - nodeMaxW);
+      nodes.forEach(n=>{ n.rx = Math.min(n.x, maxLeft); });
+
+      // render nodes: create elements invisibly first so we can measure heights,
+      // then resolve vertical collisions and re-center parents before showing.
+      document.querySelectorAll('.node.el').forEach(el=>el.remove());
+
+      // create elements hidden to measure heights
+      nodes.forEach(n=>{
+        const el = document.createElement('div');
+        el.className = 'node el d'+Math.min(n.depth,4);
+        const left = (typeof n.rx === 'number')? n.rx : n.x;
+        el.style.left = left + 'px'; el.style.top = n.y + 'px';
+        el.style.visibility = 'hidden'; // keep in layout for measurement
+        el.dataset.id = n.node.id;
+        el.tabIndex = 0;
+        el.setAttribute('role','button');
+        el.innerHTML = `<div class="title">${escapeHtml(n.node.title)}${n.node.mnemonic && showMnemonics? '<span class="mnemonic">' + escapeHtml(n.node.mnemonic) + '</span>': ''}</div>` + (n.node.sub? `<div class="sub">${escapeHtml(n.node.sub)}</div>`:'');
+
+        if(n.node.children && n.node.children.length){
+          const badge = document.createElement('div'); badge.style.position='absolute'; badge.style.right='-8px'; badge.style.top='-8px'; badge.style.width='28px'; badge.style.height='28px'; badge.style.borderRadius='8px'; badge.style.display='grid'; badge.style.placeItems='center'; badge.style.background='rgba(0,0,0,0.14)';
+          badge.style.fontSize='12px'; badge.style.pointerEvents='none'; badge.textContent = isCollapsed(n.node.id)? '+' : '−';
+          el.appendChild(badge);
+        }
+
+        el.addEventListener('click', ()=>{ if(n.node.children && n.node.children.length){ setCollapsed(n.node.id, !isCollapsed(n.node.id)); layout(); } });
+        el.addEventListener('keydown', e=>{ if(e.key==='Enter' || e.key===' '){ e.preventDefault(); el.click(); } });
+
+        canvas.appendChild(el);
+        n._el = el; // keep reference for measurement and final show
+        // measure
+        n.h = el.offsetHeight || 40;
+      });
+
+      // collision resolution: ensure minimum gap between boxes using measured heights
+      const minGap = 10;
+      // operate on a copy sorted by y
+      const byY = nodes.slice().sort((a,b)=>a.y - b.y);
+      // forward pass to push overlapping nodes down
+      for(let iter=0; iter<2; iter++){
+        for(let i=1;i<byY.length;i++){
+          const prev = byY[i-1]; const cur = byY[i];
+          const need = prev.y + (prev.h/2) + (cur.h/2) + minGap;
+          if(cur.y < need){ cur.y = need; }
+        }
+        // after shifting, re-center parents (bottom-up)
+        const maxDepth = Math.max(...nodes.map(n=>n.depth));
+        for(let d=maxDepth-1; d>=0; d--){
+          nodes.filter(n=>n.depth===d).forEach(parentEntry=>{
+            const children = nodes.filter(nn => nn.parent === parentEntry.node);
+            if(children.length){
+              const minY = Math.min(...children.map(c=>c.y));
+              const maxY = Math.max(...children.map(c=>c.y));
+              parentEntry.y = (minY + maxY) / 2;
+            }
+          });
+        }
+        // reorder byY after changes
+        byY.sort((a,b)=>a.y - b.y);
+      }
+
+  // apply final positions and make elements visible
+      // align children of 'features' to start at the parent's right edge
+      (function alignFeaturesChildren(){
+        const parentEntry = nodes.find(n=>n.node && n.node.id === 'features');
+        if(!parentEntry || !parentEntry._el) return;
+        const parentRight = parentEntry.rx + parentEntry._el.offsetWidth;
+        const gapX = 18; // horizontal gap between parent box and child boxes
+        nodes.forEach(n=>{
+          if(n.parent && n.parent.id === 'features'){
+            // position child to start at parent's right edge + gap
+            n.rx = Math.min(parentRight + gapX, maxLeft);
+            if(n._el) n._el.style.left = n.rx + 'px';
+          }
+        });
+      })();
+
+      nodes.forEach(n=>{
+        const el = n._el;
+        if(!el) return;
+        el.style.top = n.y + 'px';
+        el.style.visibility = '';
+      });
+      // compute required svg size so connectors are not clipped and
+      // so the canvas can show scrollbars when content overflows
+      const maxX = Math.max(...nodes.map(n => (n.rx || n.x) + (n._el ? n._el.offsetWidth : 160)), w);
+      const maxY = Math.max(...nodes.map(n => n.y + (n.h? n.h/2 : 20)), h);
+      const requiredWidth = Math.max(w, Math.ceil(maxX + margin));
+      const requiredHeight = Math.max(h, Math.ceil(maxY + margin));
+      svg.setAttribute('viewBox', `0 0 ${requiredWidth} ${requiredHeight}`);
+      svg.setAttribute('width', requiredWidth);
+      svg.setAttribute('height', requiredHeight);
+      svg.style.width = requiredWidth + 'px';
+      svg.style.height = requiredHeight + 'px';
+
+      // clear svg and render links using final positions
+      while (svg.firstChild) svg.removeChild(svg.firstChild);
+      nodes.forEach(n=>{
+        if(n.parent){
+          const parentNode = nodes.find(p=>p.node===n.parent);
+          if(parentNode){
+            const path = document.createElementNS('http://www.w3.org/2000/svg','path');
+            const y1 = parentNode.y;
+            const x4 = n.rx - 20; // end slightly left of child box
+            const y4 = n.y;
+            // draw a short horizontal stem from the parent's right edge (default), then curve to the child
+            // For direct children of the root node, start the connector from the LEFT edge of the root box
+            const parentRight = (parentNode._el ? parentNode.rx + parentNode._el.offsetWidth : parentNode.rx + 80);
+            const parentLeft = parentNode.rx;
+            // Start connectors from the left edge for the root, for the 'features' node, and for 'app-testers' (Software Testers)
+            const startX = (parentNode.node && (parentNode.node.id === 'root' || parentNode.node.id === 'features' || parentNode.node.id === 'app-testers')) ? parentLeft : parentRight;
+            const stemEndX = startX + 12; // small horizontal stem before the curve
+            // bias the curve control point for pink parent nodes (class d0) so the curve is more concave toward the parent
+            const bias = (parentNode._el && parentNode._el.classList && parentNode._el.classList.contains('d0')) ? 0.25 : 0.5;
+            const cx1 = startX + (x4 - startX) * bias;
+            const d = `M ${startX} ${y1} L ${stemEndX} ${y1} C ${cx1} ${y1} ${cx1} ${y4} ${x4} ${y4}`;
+            path.setAttribute('d', d);
+            path.setAttribute('stroke', 'rgba(255,255,255,0.08)');
+            path.setAttribute('fill','none');
+            path.setAttribute('stroke-width','2');
+            svg.appendChild(path);
+          }
+        }
+      });
+    }
+
+    function escapeHtml(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+    // controls
+    document.getElementById('expandAll').addEventListener('click', ()=>{ traverse(data,(n)=>state[n.id]='expanded'); saveState(); layout(); });
+    document.getElementById('collapseAll').addEventListener('click', ()=>{ traverse(data,(n)=>state[n.id]='collapsed'); saveState(); layout(); });
+    document.getElementById('toggleMnemonics').addEventListener('click', ()=>{ showMnemonics = !showMnemonics; localStorage.setItem('mindmap:testng:mn', showMnemonics? '1' : '0'); layout(); });
+
+  // initial: ensure root and first-level branches expanded unless stored
+  if(!('root' in state)) state.root = 'expanded';
+  try{
+    // expand immediate children of root by default so users see main branches
+    if(data && Array.isArray(data.children)){
+      data.children.forEach(ch=>{ if(ch && ch.id && !(ch.id in state)) state[ch.id] = 'expanded'; });
+    }
+  }catch(e){/* ignore */}
+
+  // layout on load and on resize. Delay initial layout until after paint to ensure sizes are computed.
+  window.addEventListener('resize', ()=>{ layout(); });
+  window.addEventListener('DOMContentLoaded', ()=>{ requestAnimationFrame(()=>{ layout(); }); });
+
+    // keyboard: simple navigation (Tab works), double-press space to toggle focused node
+    // save on unload
+    window.addEventListener('beforeunload', ()=>{ saveState(); });
+  </script>
+</body>
+</html>
+
